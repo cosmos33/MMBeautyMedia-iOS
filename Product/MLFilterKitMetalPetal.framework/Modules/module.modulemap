@@ -1,0 +1,6 @@
+framework module MLFilterKitMetalPetal {
+  umbrella header "MLFilterKitMetalPetal.h"
+
+  export *
+  module * { export * }
+}
