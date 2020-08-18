@@ -7,7 +7,7 @@
 
 #import <Foundation/Foundation.h>
 #import "CXBackgroundBlurFilter.h"
-@import MetalPetal;
+#import <MetalPetal/MetalPetal.h>
 @class CXBeautyConfiguration,CXMakeupLayerConfiguration, CXBeautyFilterFaceAdditionalInfo, CXBeautyMasks, MMFaceFeature, MMImageSegmentationResult, CXAutoLevelInfo;
 NS_ASSUME_NONNULL_BEGIN
 
