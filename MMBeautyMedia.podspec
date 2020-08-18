@@ -27,9 +27,7 @@ Pod::Spec.new do |s|
 
   s.dependency 'Mantle'
   s.dependency 'MetalPetal'
-  # s.dependency 'MMXEScene'
-  s.dependency 'XESceneKit'
-  s.dependency 'XEngineLuaPatch'
+  s.dependency 'MMXEngine'
   s.resources = 'Resources/*'
 
 end
