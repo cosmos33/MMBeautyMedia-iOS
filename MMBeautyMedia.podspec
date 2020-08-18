@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'MMBeautyMedia'
-  s.version          = '1.1.0'
+  s.version          = '1.2.0'
   s.summary          = 'MMBeautyMedia'
 
   s.description      = <<-DESC
@@ -27,6 +27,7 @@ Pod::Spec.new do |s|
 
   s.dependency 'Mantle'
   s.dependency 'MetalPetal'
+  s.dependency 'MMXEngine'
   s.resources = 'Resources/*'
-  
+
 end
