@@ -6,8 +6,9 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "CXBackgroundBlurFilter.h"
+//#import "CXBackgroundBlurFilter.h"
 #import <MetalPetal/MetalPetal.h>
+#import "CXFilterInputType.h"
 @class CXBeautyConfiguration,CXMakeupLayerConfiguration, CXBeautyFilterFaceAdditionalInfo, CXBeautyMasks, MMFaceFeature, MMImageSegmentationResult, CXAutoLevelInfo;
 NS_ASSUME_NONNULL_BEGIN
 
@@ -29,9 +30,9 @@ FOUNDATION_EXTERN CXFaceAdjustmentsKey CXFaceAdjustmentsLipThicknessKey;
 FOUNDATION_EXTERN CXFaceAdjustmentsKey CXFaceAdjustmentsFaceWidthKey;
 FOUNDATION_EXTERN CXFaceAdjustmentsKey CXFaceAdjustmentsEyeDistanceKey;
 FOUNDATION_EXTERN CXFaceAdjustmentsKey CXFaceAdjustmentsEyeHeightKey;// [-1, 1]
-FOUNDATION_EXPORT CXFaceAdjustmentsKey CXFaceAdjustmentsShortenFaceKey;
+FOUNDATION_EXTERN CXFaceAdjustmentsKey CXFaceAdjustmentsFaceShortenKey;
 
-
+// !! CXMakeupType not available for lite version
 typedef NSString *const CXMakeupType NS_STRING_ENUM;
 FOUNDATION_EXTERN CXMakeupType  CXMakeupTypeEyeShadow;
 FOUNDATION_EXTERN CXMakeupType  CXMakeupTypeFaceShadow;
@@ -47,8 +48,8 @@ typedef NS_OPTIONS(NSUInteger, CXBeautyOption){
     CXBeautyOptionFaceAdjust = 1 << 0,
     CXBeautyOptionSkinSmooth = 1 << 1,
     CXBeautyOptionSkinWhiten = 1 << 2,
-    CXBeautyOptionMakeup = 1 << 3,
-    CXBeautyOptionBackgroundBlur = 1 << 4,
+    CXBeautyOptionMakeup = 1 << 3,   // not available for lite version
+    CXBeautyOptionBackgroundBlur = 1 << 4, // not available for lite version
     CXBeautyOptionColorEnhance = 1 << 5,
     CXBeautyOptionAll = NSUIntegerMax,
 };
@@ -69,8 +70,6 @@ typedef NS_OPTIONS(NSUInteger, CXBeautyOption){
 
 @property (nonatomic, assign) CXBeautyOption beautyOption; // default on: faceAdjust , skinWhiten, skinSmooth
 
-@property (nonatomic, assign) CXFilterInputType inputType;
-
 - (nullable MTIImage *)processedImageWithInputImage:(nullable MTIImage *)intpuImage detectionResult:(nullable CXDetectionResults *)result;
 
 - (instancetype)initWithConfiguration:(nullable CXBeautyConfiguration *)configuration;
@@ -78,37 +77,10 @@ typedef NS_OPTIONS(NSUInteger, CXBeautyOption){
 
 - (instancetype)init NS_UNAVAILABLE;
 + (instancetype)new NS_UNAVAILABLE;
+
+@property (nonatomic, assign) CXFilterInputType inputType;
 @end
 
-
-@interface CXBeautyConfigurationAdapter (Query)
-
-+ (NSArray <CXMakeupLayerConfiguration *> *)eyeShadows NS_DEPRECATED_IOS(2_0, 2_0,"use 'syncQueryWithMakeupLayersWithType:' instead");
-+ (NSArray <CXMakeupLayerConfiguration *> *)faceShadows NS_DEPRECATED_IOS(2_0, 2_0,"use 'syncQueryWithMakeupLayersWithType:' instead");
-+ (NSArray <CXMakeupLayerConfiguration *> *)blushes NS_DEPRECATED_IOS(2_0, 2_0,"use 'syncQueryWithMakeupLayersWithType:' instead");
-+ (NSArray <CXMakeupLayerConfiguration *> *)lips NS_DEPRECATED_IOS(2_0, 2_0,"use 'syncQueryWithMakeupLayersWithType:' instead");
-+ (NSArray <CXMakeupLayerConfiguration *> *)pupils NS_DEPRECATED_IOS(2_0, 2_0,"use 'syncQueryWithMakeupLayersWithType:' instead");
-+ (NSArray <CXMakeupLayerConfiguration *> *)hairColors NS_DEPRECATED_IOS(2_0, 2_0,"use 'syncQueryWithMakeupLayersWithType:' instead");
-
-+ (void)asyncQueryWithMakeupLayersWithType:(CXMakeupType)type complation:(void(^)(NSArray <CXMakeupLayerConfiguration *>* layerConfigurations))results;
-
-+ (NSArray <CXMakeupLayerConfiguration *>*)syncQueryWithMakeupLayersWithType:(CXMakeupType)type;
-
-@end
-
-
-@interface CXBeautyConfigurationAdapter (Makeup)
-
-// makeup
-- (void)addMakeupLayerConfiguration:(CXMakeupLayerConfiguration *)layerConfiguration;
-
-// remove method
-- (void)removeMakeupLayerConfigurationWithLayerIdentifier:(NSString *)layerIdentifier NS_SWIFT_NAME(remove(makeupLayerID:));
-
-// custom
-- (nullable CXMakeupLayerConfiguration *)makeupLayerWithContentsOfFile:(NSURL *)resourceURL error:(NSError **)error;
-
-@end
 
 @interface CXBeautyConfigurationAdapter (FaceAdjust)
 
@@ -116,25 +88,21 @@ typedef NS_OPTIONS(NSUInteger, CXBeautyOption){
 
 @end
 
-@interface CXBeautyConfigurationAdapter (BackgroundBlur)
-
-- (void)backgroundBlurIntensity:(float)intensity;
-
-- (void)backgroundBlurMode:(CXBackgroundBlurMode)mode;
-@end
 
 @interface CXBeautyConfigurationAdapter (Skin)
 - (void)smoothSkin:(float)amount;
-- (void)smoothSkinCorrection:(BOOL)correctionEnbale;
 
-- (void)adjustNasolabialFoldsArea:(float)amount;
-- (void)adjustEyesArea:(float)amount;
+- (void)smoothSkinCorrection:(BOOL)correctionEnbale;
 
 - (void)whitenSkin:(float)amount;
 
 - (void)whitenTeeth:(float)amount;
 
 - (void)faceIllumination:(float)amount;
+
+- (void)adjustNasolabialFoldsArea:(float)amount;
+
+- (void)adjustEyesArea:(float)amount;
 @end
 
 @interface CXBeautyConfigurationAdapter (ColorEnhance)
