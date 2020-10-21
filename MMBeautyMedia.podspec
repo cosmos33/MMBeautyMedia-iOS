@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'MMBeautyMedia'
-  s.version          = '1.2.0'
+  s.version          = '2.0.0'
   s.summary          = 'MMBeautyMedia'
 
   s.description      = <<-DESC
@@ -22,12 +22,25 @@ Pod::Spec.new do |s|
 
   s.ios.deployment_target = '10.0'
 
-  s.vendored_frameworks = 'Product/**/*.framework'
+  s.subspec 'Beauty' do |sp|
+    sp.vendored_frameworks = 'Product/CXBeautyKit.framework'
+    sp.resources = 'Resources/Beauty/*'
+  end
+
+  s.subspec 'Filter' do |sp|
+    sp.vendored_frameworks = 'Product/MLFilterKit.framework', 'Product/MLFilterKitMetalPetal.framework'
+    sp.resources = 'Resources/Filter/*'
+  end
+
+  s.subspec 'Sticker' do |sp|
+    sp.vendored_frameworks = 'Product/FaceDecorationKit.framework', 'Product/FaceDecorationKitMetalPetal.framework', 'Product/FaceDecorationKitX3D.framework'
+    sp.resources = 'Resources/Sticker/*'
+    sp.dependency 'MMXEngine'
+  end
+
   s.pod_target_xcconfig = { 'ENABLE_BITCODE' => '$(inherited) NO', 'OTHER_LDFLAGS' => '$(inherited) -ObjC', 'MTL_LANGUAGE_REVISION' => 'Metal12', 'CLANG_WARN_DOCUMENTATION_COMMENTS' => '$(inherited) NO'}
 
   s.dependency 'Mantle'
-  s.dependency 'MetalPetal'
-  s.dependency 'MMXEngine'
-  s.resources = 'Resources/*'
+  s.dependency 'MetalPetal/Static'
 
 end
